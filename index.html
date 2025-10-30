@@ -14,8 +14,8 @@
       padding: 40px 10px;
     }
     .crossword-img {
-      max-width: 90vw;
-      width: 500px;
+      max-width: 100%;
+      width: 800px;
       border: 8px solid #fff;
       border-radius: 10px;
       box-shadow: 0 0 20px #b94e10;
@@ -94,7 +94,7 @@
   <img src="crossword.png" alt="Christmas Party Crossword" class="crossword-img" />
   <div class="input-area">
     <input id="codeInput" type="text" placeholder="Enter the secret code..." autocomplete="off" />
-    <button onclick="checkCode()">Reveal Details</button>
+    <button onclick="checkCode()">Submit Guess</button>
     <div id="errorMsg" class="error" style="display:none;"></div>
   </div>
   <div id="partyDetails" class="details">
