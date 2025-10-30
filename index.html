@@ -97,25 +97,17 @@ button:hover {
 h2 {
   font-size: 3.5em;
   font-weight: 900;
-  color: #fff7e1;
   letter-spacing: 2px;
-  text-shadow:
-    0 0 3px rgba(255, 255, 255, 0.8),
-    0 2px 4px rgba(168, 77, 0, 0.4);
-  animation: fadeglow 5s ease-in-out infinite alternate;
+  color: #fff7e1;
+  animation: colorShift 6s infinite ease-in-out;
 }
 
-@keyframes fadeglow {
-  from {
-    text-shadow:
-      0 0 2px rgba(255, 255, 255, 0.6),
-      0 2px 3px rgba(168, 77, 0, 0.4);
-  }
-  to {
-    text-shadow:
-      0 0 5px rgba(255, 231, 160, 0.9),
-      0 2px 6px rgba(168, 77, 0, 0.4);
-  }
+@keyframes colorShift {
+  0%   { color: #fff7e1; }   /* soft cream */
+  25%  { color: #ffb85c; }   /* golden yellow */
+  50%  { color: #ff6b6b; }   /* warm red */
+  75%  { color: #7ae582; }   /* festive green */
+  100% { color: #fff7e1; }   /* back to cream */
 }
   </style>
 </head>
