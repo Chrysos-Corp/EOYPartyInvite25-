@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Christmas Party Crossword Code Guess</title>
-  <!-- Import Roboto font from Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -52,7 +51,15 @@
     }
     button:hover { background: #8f3f00; transform: scale(1.05); }
 
-    /* Original invite block look */
+    /* Keep the heading solid white (no animation) */
+    h2 {
+      font-size: 3.5em;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ffffff;
+    }
+
+    /* Original invite look */
     .details {
       display: none;
       margin-top: 40px;
@@ -79,7 +86,6 @@
       font-family: 'Roboto', Arial, sans-serif;
     }
 
-    .details ul { text-align: left; margin-top: 12px; margin-bottom: 12px; }
     .invite-title {
       font-family: 'Arial Black', Arial, sans-serif;
       font-size: 2em;
@@ -91,43 +97,25 @@
       display: inline-block;
     }
 
-    /* Festive colour-shifting title (no glow) */
-    h2 {
-      font-size: 3.5em;
-      font-weight: 900;
-      letter-spacing: 2px;
-      color: #fff7e1;
-      animation: colorShift 4s infinite ease-in-out;
-    }
-    @keyframes colorShift {
-      0%   { color: #fff7e1; }
-      25%  { color: #ffb85c; }
-      50%  { color: #ff6b6b; }
-      75%  { color: #7ae582; }
-      100% { color: #fff7e1; }
-    }
-
     /* ===== Modal upgrade for the invite ===== */
-    /* Turn #partyDetails into a centered modal when shown */
     #partyDetails {
       position: fixed;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%) scale(0.92);
-      display: none;               /* hidden until correct code */
+      display: none;
       z-index: 1001;
       max-width: 680px;
       width: 92vw;
       max-height: 80vh;
       overflow: auto;
-      animation: popIn 380ms ease-out forwards;
+      animation: popIn 360ms ease-out forwards;
     }
     @keyframes popIn {
       from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
       to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
 
-    /* Backdrop behind modal */
     .backdrop {
       position: fixed;
       inset: 0;
@@ -136,7 +124,6 @@
       z-index: 1000;
     }
 
-    /* Confetti canvas on top (no clicks) */
     #confettiCanvas {
       position: fixed;
       inset: 0;
@@ -145,17 +132,89 @@
       z-index: 1002;
     }
 
-    /* Optional small close button in the modal header area */
-    .close-btn {
-      position: sticky;
-      top: 8px;
-      float: right;
-      background: transparent;
-      color: #a84d00;
-      border: none;
-      font-size: 1.2em;
+    /* ===== Envelope (centered, clickable) ===== */
+    #envelope {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.98);
+      display: none;                 /* shown after confetti */
+      z-index: 1001;
+      width: 340px;
+      height: 220px;
       cursor: pointer;
+      animation: envPop 380ms ease-out forwards, floaty 4s ease-in-out infinite;
     }
+    @keyframes envPop {
+      from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+      to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
+    @keyframes floaty {
+      0%,100% { transform: translate(-50%, -50%) translateY(0); }
+      50%     { transform: translate(-50%, -50%) translateY(-6px); }
+    }
+
+    /* Envelope pieces */
+    .env-body {
+      position: absolute;
+      width: 100%;
+      height: 70%;
+      bottom: 0;
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border: 3px solid #e8d8b8;
+    }
+    .env-flap {
+      position: absolute;
+      width: 100%;
+      height: 60%;
+      top: 0;
+      background: linear-gradient(#ffe7b8, #f6d79a);
+      clip-path: polygon(0 0, 100% 0, 50% 55%);
+      border: 3px solid #e8d8b8;
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+    }
+    .env-letter {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 18%;
+      width: 86%;
+      background: #fff7e1;
+      color: #a84d00;
+      border-radius: 8px;
+      padding: 12px 14px;
+      border: 2px solid #e8d8b8;
+      text-align: center;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .env-letter span {
+  display: block;
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+#envelope:focus { outline: 3px dashed #fff; outline-offset: 6px; }
+#envelope:hover { filter: brightness(1.03); }
+
+/* Gentle peek when hovering or focusing the envelope */
+#envelope:hover .env-flap,
+#envelope:focus .env-flap {
+  transform: rotateX(22deg);
+}
+
+/* When opened: flap flips up, letter slides up */
+#envelope.open .env-flap {
+  transform: rotateX(180deg);
+  filter: brightness(1.05);
+}
+#envelope.open .env-letter {
+  transform: translate(-50%, -24px);
+  opacity: 1;
+}
   </style>
 </head>
 <body>
@@ -169,10 +228,10 @@
     <div id="errorMsg" class="error" style="display:none;"></div>
   </div>
 
-  <!-- Invite (will be shown as a centered modal) -->
-  <div id="partyDetails" class="details">
+  <!-- Invite (modal) -->
+  <div id="partyDetails" class="details" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
     <button class="close-btn" title="Close" onclick="closeInvite()">✕</button>
-    <div class="invite-title">🎉YOU'RE INVITED!🎉</div>
+    <div id="inviteTitle" class="invite-title">🎉YOU'RE INVITED!🎉</div>
     <p>
       <strong>Join us for our Christmas Party at Kingpin Bowling Norwood!</strong><br><br>
       Get ready for an afternoon of fun! Bowling, laser tag, and retro arcade games. Lunch is included, with beer, wine, and soft drinks provided. So bring your game face and your best moves.<br><br>
@@ -187,40 +246,41 @@
     </p>
   </div>
 
-  <!-- Backdrop & Confetti canvas (additions) -->
-  <div id="backdrop" class="backdrop"></div>
+  <!-- Backdrop, Confetti canvas, Envelope -->
+  <div id="backdrop" class="backdrop" aria-hidden="true"></div>
   <canvas id="confettiCanvas"></canvas>
 
+  <div id="envelope" tabindex="0" role="button" aria-label="Open invite">
+    <div class="env-flap"></div>
+    <div class="env-body"></div>
+    <div class="env-letter">🎉 YOU'RE INVITED! 🎉<span>Click to open</span></div>
+  </div>
+
   <script>
-    let attempts = 0; // Track number of incorrect guesses
+    let attempts = 0;
 
     function checkCode() {
       const input = document.getElementById('codeInput').value.trim().toUpperCase();
-      const validCodes = [
-        "BOWLING",
-        "KINGPIN",
-        "KINGPIN BOWLING"
-      ];
+      const validCodes = ["BOWLING", "KINGPIN", "KINGPIN BOWLING"];
       const errorMsg = document.getElementById('errorMsg');
-      const partyDetails = document.getElementById('partyDetails');
-      const backdrop = document.getElementById('backdrop');
 
       if (validCodes.includes(input)) {
-        // Show modal + backdrop
-        partyDetails.style.display = 'block';
-        backdrop.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // prevent page scroll while modal is open
+        // 1) show backdrop
+        document.getElementById('backdrop').style.display = 'block';
+        document.body.style.overflow = 'hidden';
         errorMsg.style.display = 'none';
         attempts = 0;
 
-        // Confetti celebration
-        confettiBurst();
+        // 2) confetti → then envelope
+        confettiBurst(1800, 160, () => {
+          const env = document.getElementById('envelope');
+          env.style.display = 'block';
+          env.focus(); // accessibility: focus envelope so Enter activates it
+        });
 
       } else {
         attempts++;
-        partyDetails.style.display = 'none';
-        backdrop.style.display = 'none';
-        document.body.style.overflow = '';
+        hideAllOverlays();
 
         if (attempts === 3) {
           errorMsg.textContent = "Hint: It’s where balls roll, pins fall and legends are made!";
@@ -231,22 +291,43 @@
       }
     }
 
-    // Close invite (button, backdrop click, or ESC)
-    function closeInvite() {
+    // Clicking / Enter on envelope opens invite
+    const envelope = document.getElementById('envelope');
+    envelope.addEventListener('click', openInviteFromEnvelope);
+    envelope.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openInviteFromEnvelope();
+      }
+    });
+
+    function openInviteFromEnvelope() {
+      envelope.style.display = 'none';
+      const partyDetails = document.getElementById('partyDetails');
+      partyDetails.style.display = 'block';
+    }
+
+    function closeInvite() { hideAllOverlays(); }
+
+    function hideAllOverlays() {
       document.getElementById('partyDetails').style.display = 'none';
       document.getElementById('backdrop').style.display = 'none';
+      document.getElementById('confettiCanvas').style.display = 'none';
+      document.getElementById('envelope').style.display = 'none';
       document.body.style.overflow = '';
     }
 
-    document.getElementById('backdrop').addEventListener('click', closeInvite);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeInvite(); });
+    // Close on backdrop click or ESC
+    document.getElementById('backdrop').addEventListener('click', hideAllOverlays);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') hideAllOverlays(); });
 
+    // Enter to submit from input
     document.getElementById('codeInput').addEventListener('keydown', function(e) {
       if (e.key === 'Enter') checkCode();
     });
 
-    /* ---------- Confetti (vanilla JS canvas) ---------- */
-    function confettiBurst(duration = 2200, count = 140) {
+    /* ---------- Confetti (vanilla canvas), now with callback ---------- */
+    function confettiBurst(duration = 2000, count = 140, onDone = () => {}) {
       const canvas = document.getElementById('confettiCanvas');
       const ctx = canvas.getContext('2d');
 
@@ -255,20 +336,19 @@
         canvas.height = window.innerHeight;
       }
       resize();
-      window.addEventListener('resize', resize);
+      window.addEventListener('resize', resize, { once:true });
 
       const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#F7AEF8', '#FF9A9E'];
       const cx = canvas.width / 2;
-      const cy = canvas.height / 2 - 40; // slightly above center
-      const particles = Array.from({ length: count }).map(() => {
+      const cy = canvas.height / 2 - 40;
+      const parts = Array.from({ length: count }).map(() => {
         const angle = Math.random() * Math.PI * 2;
         const speed = 5 + Math.random() * 6;
         return {
-          x: cx,
-          y: cy,
+          x: cx, y: cy,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          ay: 0.18 + Math.random() * 0.2,  // gravity
+          ay: 0.18 + Math.random() * 0.2,
           size: 3 + Math.random() * 5,
           rot: Math.random() * Math.PI,
           vr: (Math.random() - 0.5) * 0.3,
@@ -282,19 +362,18 @@
       function frame(t) {
         if (!start) start = t;
         const elapsed = t - start;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        particles.forEach(p => {
-          p.vy += p.ay;   // gravity
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        parts.forEach(p => {
+          p.vy += p.ay;
           p.x += p.vx;
           p.y += p.vy;
           p.rot += p.vr;
-
           ctx.save();
           ctx.translate(p.x, p.y);
           ctx.rotate(p.rot);
           ctx.fillStyle = p.color;
-          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
           ctx.restore();
         });
 
@@ -303,9 +382,9 @@
         } else {
           canvas.style.display = 'none';
           ctx.clearRect(0, 0, canvas.width, canvas.height);
+          onDone(); // 🚀 show envelope
         }
       }
-
       requestAnimationFrame(frame);
     }
   </script>
