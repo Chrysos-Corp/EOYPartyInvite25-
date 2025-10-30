@@ -94,13 +94,22 @@ button:hover {
       background: none;
       display: inline-block;
     }
-    h2 {
-  font-size: 3.2em;
+  h2 {
+  font-size: 3.5em;
   font-weight: 900;
+  color: #fff7e1;
   letter-spacing: 2px;
-  background: linear-gradient(90deg, #fff7e1, #ffd7a8, #ffffff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 8px #a84d00, 0 0 15px #ffd7a8, 0 0 25px #fff;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 5px #a84d00, 0 0 10px #ffd7a8, 0 0 15px #fff;
+  }
+  to {
+    text-shadow: 0 0 15px #ffb85c, 0 0 25px #fff5d1, 0 0 30px #ffffff;
+  }
 }
   </style>
 </head>
