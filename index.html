@@ -94,7 +94,7 @@
   <img src="crossword.png" alt="Christmas Party Crossword" class="crossword-img" />
   <div class="input-area">
     <input id="codeInput" type="text" placeholder="Enter the secret code..." autocomplete="off" />
-    <button onclick="checkCode()">Submit Guess</button>
+    <button onclick="checkCode()">Submit</button>
     <div id="errorMsg" class="error" style="display:none;"></div>
   </div>
   <div id="partyDetails" class="details">
@@ -119,9 +119,6 @@
     const input = document.getElementById('codeInput').value.trim().toUpperCase();
     const validCodes = [
       "BOWLING",
-      "BOWLING ALLEY",
-      "LEGENDS",
-      "BOWLING LEGENDS",
       "KINGPIN",
       "KINGPIN BOWLING"
     ];
