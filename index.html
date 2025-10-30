@@ -94,21 +94,42 @@ button:hover {
       background: none;
       display: inline-block;
     }
-  h2 {
+ h2 {
   font-size: 3.5em;
   font-weight: 900;
   color: #fff7e1;
   letter-spacing: 2px;
-  text-shadow: 0 0 8px #a84d00, 0 0 15px #ffd7a8, 0 0 25px #fff;
-  animation: glow 2s ease-in-out infinite alternate;
+  text-shadow:
+    0 0 8px #ffb85c,
+    0 0 15px #ffd7a8,
+    0 0 25px #fff;
+  animation: twinkle 3s ease-in-out infinite alternate;
 }
 
-@keyframes glow {
-  from {
-    text-shadow: 0 0 5px #a84d00, 0 0 10px #ffd7a8, 0 0 15px #fff;
+@keyframes twinkle {
+  0% {
+    text-shadow:
+      0 0 8px #ffb85c,
+      0 0 16px #ffd7a8,
+      0 0 28px #fff;
   }
-  to {
-    text-shadow: 0 0 15px #ffb85c, 0 0 25px #fff5d1, 0 0 30px #ffffff;
+  33% {
+    text-shadow:
+      0 0 10px #ff9a9e,
+      0 0 20px #ffb6b9,
+      0 0 30px #fff3c4;
+  }
+  66% {
+    text-shadow:
+      0 0 12px #ffe29f,
+      0 0 22px #ffdea8,
+      0 0 34px #ffffff;
+  }
+  100% {
+    text-shadow:
+      0 0 8px #ffb85c,
+      0 0 15px #ffd7a8,
+      0 0 25px #fff;
   }
 }
   </style>
