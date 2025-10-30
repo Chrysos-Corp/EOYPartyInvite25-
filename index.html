@@ -100,42 +100,21 @@ h2 {
   color: #fff7e1;
   letter-spacing: 2px;
   text-shadow:
-    0 0 4px #ffb85c,
-    0 0 8px #ffd7a8,
-    0 0 12px #fff;
-  animation: twinkle 5s ease-in-out infinite alternate;
+    0 0 3px rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(168, 77, 0, 0.4);
+  animation: fadeglow 5s ease-in-out infinite alternate;
 }
 
-@keyframes twinkle {
-  0% {
+@keyframes fadeglow {
+  from {
     text-shadow:
-      0 0 4px #ffb85c,
-      0 0 8px #ffd7a8,
-      0 0 12px #ffffff;
+      0 0 2px rgba(255, 255, 255, 0.6),
+      0 2px 3px rgba(168, 77, 0, 0.4);
   }
-  25% {
+  to {
     text-shadow:
-      0 0 5px #ff7b7b,
-      0 0 10px #ffb6b9,
-      0 0 14px #fff3c4;
-  }
-  50% {
-    text-shadow:
-      0 0 5px #8be9fd,
-      0 0 10px #80ffdb,
-      0 0 15px #ffffff;
-  }
-  75% {
-    text-shadow:
-      0 0 4px #ffe29f,
-      0 0 8px #ffd7a8,
-      0 0 12px #fff5d1;
-  }
-  100% {
-    text-shadow:
-      0 0 4px #ffb85c,
-      0 0 8px #ffd7a8,
-      0 0 12px #fff;
+      0 0 5px rgba(255, 231, 160, 0.9),
+      0 2px 6px rgba(168, 77, 0, 0.4);
   }
 }
   </style>
