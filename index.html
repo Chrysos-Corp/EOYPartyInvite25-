@@ -113,28 +113,42 @@
     </p>
   </div>
   <script>
-    function checkCode() {
-      const input = document.getElementById('codeInput').value.trim().toUpperCase();
-      const validCodes = [
-        "BOWLING",
-        "BOWLING ALLEY",
-        "LEGENDS",
-        "BOWLING LEGENDS",
-        "KINGPIN",
-        "KINGPIN BOWLING"
-      ];
-      if (validCodes.includes(input)) {
-        document.getElementById('partyDetails').style.display = 'block';
-        document.getElementById('errorMsg').style.display = 'none';
+  let attempts = 0; // Track number of incorrect guesses
+
+  function checkCode() {
+    const input = document.getElementById('codeInput').value.trim().toUpperCase();
+    const validCodes = [
+      "BOWLING",
+      "BOWLING ALLEY",
+      "LEGENDS",
+      "BOWLING LEGENDS",
+      "KINGPIN",
+      "KINGPIN BOWLING"
+    ];
+    const errorMsg = document.getElementById('errorMsg');
+    const partyDetails = document.getElementById('partyDetails');
+
+    if (validCodes.includes(input)) {
+      partyDetails.style.display = 'block';
+      errorMsg.style.display = 'none';
+      attempts = 0; // Reset attempts if they get it right
+    } else {
+      attempts++;
+      partyDetails.style.display = 'none';
+
+      if (attempts === 3) {
+        errorMsg.textContent = "Hint: It’s where balls roll, pins fall and legends are made!";
       } else {
-        document.getElementById('partyDetails').style.display = 'none';
-        document.getElementById('errorMsg').textContent = "Oops! That's not the secret location. Try again!";
-        document.getElementById('errorMsg').style.display = 'block';
+        errorMsg.textContent = "Oops! That's not the secret location. Try again!";
       }
+
+      errorMsg.style.display = 'block';
     }
-    document.getElementById('codeInput').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') checkCode();
-    });
-  </script>
+  }
+
+  document.getElementById('codeInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkCode();
+  });
+</script>
 </body>
 </html>
