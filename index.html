@@ -25,28 +25,35 @@
     .input-area {
       margin: 30px 0;
     }
-    input[type="text"] {
-      padding: 10px;
-      font-size: 1.2em;
-      border-radius: 6px;
-      border: 2px solid #fff;
-      background: #fff7e1;
-      color: #a84d00;
-      width: 220px;
-      text-align: center;
-      font-family: 'Roboto', Arial, sans-serif;
-    }
-    button {
-      padding: 10px 24px;
-      font-size: 1.2em;
-      border-radius: 6px;
-      border: none;
-      background: #a84d00;
-      color: #fff;
-      margin-left: 10px;
-      cursor: pointer;
-      font-family: 'Roboto', Arial, sans-serif;
-    }
+   input[type="text"] {
+  padding: 16px;             /* more padding = taller input box */
+  font-size: 1.5em;          /* larger text */
+  border-radius: 8px;
+  border: 3px solid #fff;
+  background: #fff7e1;
+  color: #a84d00;
+  width: 300px;              /* wider input box */
+  text-align: center;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+button {
+  padding: 16px 32px;        /* larger button */
+  font-size: 1.5em;          /* larger text */
+  border-radius: 8px;
+  border: none;
+  background: #a84d00;
+  color: #fff;
+  margin-left: 12px;
+  cursor: pointer;
+  font-family: 'Roboto', Arial, sans-serif;
+  transition: transform 0.2s, background 0.2s;
+}
+
+button:hover {
+  background: #8f3f00;
+  transform: scale(1.05);    /* slight hover pop effect */
+}
     .details {
       display: none;
       margin-top: 40px;
