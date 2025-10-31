@@ -271,12 +271,16 @@
         errorMsg.style.display = 'none';
         attempts = 0;
 
-        // 2) confetti → then envelope
-        confettiBurst(1800, 160, () => {
-          const env = document.getElementById('envelope');
-          env.style.display = 'block';
-          env.focus(); // accessibility: focus envelope so Enter activates it
-        });
+       // 2) play victory sound + confetti → then envelope
+const victory = document.getElementById('victorySound');
+victory.currentTime = 0;  // restart if played before
+victory.play().catch(() => {}); // ignore autoplay block errors
+
+confettiBurst(1800, 160, () => {
+  const env = document.getElementById('envelope');
+  env.style.display = 'block';
+  env.focus(); // accessibility: focus envelope so Enter activates it
+});
 
       } else {
         attempts++;
