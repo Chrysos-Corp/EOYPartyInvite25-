@@ -215,6 +215,10 @@
   transform: translate(-50%, -24px);
   opacity: 1;
 }
+    <audio id="victorySound"
+       src="./victorysound.mp3?v=1"   <!-- cache-bust to avoid stale 404s -->
+       preload="auto">
+</audio>
   </style>
 </head>
 <body>
@@ -271,15 +275,21 @@
         errorMsg.style.display = 'none';
         attempts = 0;
 
-       // 2) play victory sound + confetti → then envelope
+  // 2) play victory sound + confetti → then envelope
 const victory = document.getElementById('victorySound');
-victory.currentTime = 0;  // restart if played before
-victory.play().catch(() => {}); // ignore autoplay block errors
+if (victory) {
+  try {
+    victory.currentTime = 0;
+    victory.play().catch(() => {}); // ignore autoplay rejections
+  } catch (e) {
+    console.warn('Could not play victory sound:', e);
+  }
+}
 
 confettiBurst(1800, 160, () => {
   const env = document.getElementById('envelope');
   env.style.display = 'block';
-  env.focus(); // accessibility: focus envelope so Enter activates it
+  env.focus();
 });
 
       } else {
