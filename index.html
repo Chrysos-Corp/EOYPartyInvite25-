@@ -51,7 +51,6 @@
     }
     button:hover { background: #8f3f00; transform: scale(1.05); }
 
-    /* Keep the heading solid white (no animation) */
     h2 {
       font-size: 3.5em;
       font-weight: 900;
@@ -59,7 +58,6 @@
       color: #ffffff;
     }
 
-    /* Original invite look */
     .details {
       display: none;
       margin-top: 40px;
@@ -97,7 +95,7 @@
       display: inline-block;
     }
 
-    /* ===== Modal upgrade for the invite ===== */
+    /* Modal invite */
     #partyDetails {
       position: fixed;
       left: 50%;
@@ -132,13 +130,13 @@
       z-index: 1002;
     }
 
-    /* ===== Envelope (centered, clickable) ===== */
+    /* Envelope (centered, clickable) */
     #envelope {
       position: fixed;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%) scale(0.98);
-      display: none;                 /* shown after confetti */
+      display: none;
       z-index: 1001;
       width: 640px;
       height: 430px;
@@ -175,6 +173,9 @@
       border: 3px solid #e8d8b8;
       border-bottom: none;
       border-radius: 12px 12px 0 0;
+      transform-origin: 50% 0%;
+      transition: transform 420ms ease, filter 200ms ease;
+      will-change: transform;
     }
     .env-letter {
       position: absolute;
@@ -190,35 +191,29 @@
       text-align: center;
       font-weight: 700;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 420ms ease, opacity 320ms ease;
+      will-change: transform, opacity;
     }
-    .env-letter span {
-  display: block;
-  font-size: 0.85em;
-  opacity: 0.8;
-}
+    .env-letter span { display: block; font-size: 0.85em; opacity: 0.8; }
 
-#envelope:focus { outline: none; }
-#envelope:hover { filter: brightness(1.03); }
+    #envelope:focus { outline: none; }
+    #envelope:hover { filter: brightness(1.03); }
 
-/* Gentle peek when hovering or focusing the envelope */
-#envelope:hover .env-flap,
-#envelope:focus .env-flap {
-  transform: rotateX(22deg);
-}
+    /* Hover peek */
+    #envelope:hover .env-flap,
+    #envelope:focus .env-flap {
+      transform: rotateX(22deg);
+    }
 
-/* When opened: flap flips up, letter slides up */
-#envelope.open .env-flap {
-  transform: rotateX(180deg);
-  filter: brightness(1.05);
-}
-#envelope.open .env-letter {
-  transform: translate(-50%, -24px);
-  opacity: 1;
-}
-    <audio id="victorySound"
-       src="./victorysound.mp3?v=1"   <!-- cache-bust to avoid stale 404s -->
-       preload="auto">
-</audio>
+    /* Open state */
+    #envelope.open .env-flap {
+      transform: rotateX(180deg);
+      filter: brightness(1.05);
+    }
+    #envelope.open .env-letter {
+      transform: translate(-50%, -24px);
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -260,6 +255,9 @@
     <div class="env-letter">🎉 YOU'RE INVITED! 🎉<span>Click to open</span></div>
   </div>
 
+  <!-- ✅ Audio element lives in the BODY, not inside <style> -->
+  <audio id="victorySound" src="./victorysound.mp3?v=1" preload="auto"></audio>
+
   <script>
     let attempts = 0;
 
@@ -269,28 +267,29 @@
       const errorMsg = document.getElementById('errorMsg');
 
       if (validCodes.includes(input)) {
-        // 1) show backdrop
+        // show backdrop
         document.getElementById('backdrop').style.display = 'block';
         document.body.style.overflow = 'hidden';
         errorMsg.style.display = 'none';
         attempts = 0;
 
-  // 2) play victory sound + confetti → then envelope
-const victory = document.getElementById('victorySound');
-if (victory) {
-  try {
-    victory.currentTime = 0;
-    victory.play().catch(() => {}); // ignore autoplay rejections
-  } catch (e) {
-    console.warn('Could not play victory sound:', e);
-  }
-}
+        // play victory sound (guarded)
+        const victory = document.getElementById('victorySound');
+        if (victory) {
+          try {
+            victory.currentTime = 0;
+            victory.play().catch(() => {});
+          } catch (e) {
+            console.warn('Could not play victory sound:', e);
+          }
+        }
 
-confettiBurst(1800, 160, () => {
-  const env = document.getElementById('envelope');
-  env.style.display = 'block';
-  env.focus();
-});
+        // confetti → then show envelope
+        confettiBurst(1800, 160, () => {
+          const env = document.getElementById('envelope');
+          env.style.display = 'block';
+          env.focus();
+        });
 
       } else {
         attempts++;
@@ -303,8 +302,9 @@ confettiBurst(1800, 160, () => {
         }
         errorMsg.style.display = 'block';
       }
+    } // ← ✅ close checkCode() here
 
-    // Clicking / Enter on envelope opens invite
+    // Envelope interactions (outside the function)
     const envelope = document.getElementById('envelope');
     envelope.addEventListener('click', openInviteFromEnvelope);
     envelope.addEventListener('keydown', (e) => {
@@ -315,9 +315,15 @@ confettiBurst(1800, 160, () => {
     });
 
     function openInviteFromEnvelope() {
-      envelope.style.display = 'none';
-      const partyDetails = document.getElementById('partyDetails');
-      partyDetails.style.display = 'block';
+      // optional: replay sound here for iOS
+      // const v = document.getElementById('victorySound');
+      // if (v) { try { v.currentTime = 0; v.play().catch(()=>{}); } catch(e){} }
+
+      envelope.classList.add('open'); // show flap/letter animation
+      setTimeout(() => {
+        envelope.style.display = 'none';
+        document.getElementById('partyDetails').style.display = 'block';
+      }, 500);
     }
 
     function closeInvite() { hideAllOverlays(); }
@@ -328,6 +334,9 @@ confettiBurst(1800, 160, () => {
       document.getElementById('confettiCanvas').style.display = 'none';
       document.getElementById('envelope').style.display = 'none';
       document.body.style.overflow = '';
+
+      const victory = document.getElementById('victorySound');
+      if (victory) victory.pause();
     }
 
     // Close on backdrop click or ESC
@@ -339,15 +348,12 @@ confettiBurst(1800, 160, () => {
       if (e.key === 'Enter') checkCode();
     });
 
-    /* ---------- Confetti (vanilla canvas), now with callback ---------- */
+    /* ---------- Confetti (vanilla canvas), with callback ---------- */
     function confettiBurst(duration = 2000, count = 140, onDone = () => {}) {
       const canvas = document.getElementById('confettiCanvas');
       const ctx = canvas.getContext('2d');
 
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
+      function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
       resize();
       window.addEventListener('resize', resize, { once:true });
 
@@ -379,8 +385,7 @@ confettiBurst(1800, 160, () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         parts.forEach(p => {
           p.vy += p.ay;
-          p.x += p.vx;
-          p.y += p.vy;
+          p.x += p.vx; p.y += p.vy;
           p.rot += p.vr;
           ctx.save();
           ctx.translate(p.x, p.y);
@@ -395,7 +400,7 @@ confettiBurst(1800, 160, () => {
         } else {
           canvas.style.display = 'none';
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          onDone(); // 🚀 show envelope
+          onDone();
         }
       }
       requestAnimationFrame(frame);
